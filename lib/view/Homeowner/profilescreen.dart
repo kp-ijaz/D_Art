@@ -1,18 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:d_art/controller/controller/profileController.dart';
-import 'package:d_art/view/serviceprovider/edit_profile.dart';
+import 'package:d_art/controller/controller/profile_controller.dart';
+import 'package:d_art/view/Homeowner/edit_profile.dart';
 import 'package:d_art/view/widgets/Loginpage/loginpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:io';
-
 import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfilePage extends StatelessWidget {
   final ProfileController controller = Get.find<ProfileController>();
 
-  ProfilePage({super.key});
+  ProfilePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +22,7 @@ class ProfilePage extends StatelessWidget {
       body: FutureBuilder<DocumentSnapshot>(
         future: FirebaseFirestore.instance
             .collection('profiles')
-            .doc(FirebaseAuth
-                .instance.currentUser?.uid) // Using UID instead of email
+            .doc(FirebaseAuth.instance.currentUser?.uid)
             .get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -42,6 +39,8 @@ class ProfilePage extends StatelessWidget {
           controller.location.value = data['location'] ?? '';
           controller.bio.value = data['bio'] ?? '';
           controller.imagePath.value = data['imagePath'] ?? '';
+          String imageUrl =
+              data['imageUrl'] ?? ''; // Get imageUrl from Firestore
 
           return Obx(() => CustomScrollView(
                 controller: scrollController,
@@ -61,7 +60,7 @@ class ProfilePage extends StatelessWidget {
                             logout();
                             Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
-                                  builder: (context) => Loginpage()),
+                                  builder: (context) => LoginPage()),
                               (Route<dynamic> route) => false,
                             );
                           }
@@ -83,9 +82,9 @@ class ProfilePage extends StatelessWidget {
                       title: controller.isScrolled.value
                           ? Text(controller.name.value)
                           : const Text(""),
-                      background: controller.imagePath.value.isNotEmpty
-                          ? Image.file(
-                              File(controller.imagePath.value),
+                      background: imageUrl.isNotEmpty
+                          ? Image.network(
+                              imageUrl, // Use imageUrl from Firestore
                               fit: BoxFit.cover,
                             )
                           : Image.asset(
@@ -132,8 +131,7 @@ class ProfilePage extends StatelessWidget {
                               ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Colors.blue, // Use appropriate property
+                                  backgroundColor: Colors.blue,
                                 ),
                                 child: TextButton.icon(
                                   onPressed: () {},
@@ -227,7 +225,7 @@ class ProfilePage extends StatelessWidget {
                                       crossAxisCount: 2,
                                       crossAxisSpacing: 8,
                                       mainAxisSpacing: 8),
-                              itemCount: 8, // Adjust the item count as needed
+                              itemCount: 8,
                               itemBuilder: (context, index) {
                                 return Container(
                                   decoration: BoxDecoration(
@@ -260,7 +258,7 @@ Future<void> logout() async {
   try {
     await GoogleSignIn().signOut();
     await FirebaseAuth.instance.signOut();
-    Get.offAll(() => Loginpage());
+    Get.offAll(() => LoginPage());
   } on FirebaseAuthException catch (e) {
     throw e.message!;
   } catch (e) {

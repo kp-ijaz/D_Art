@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:d_art/controller/controller/profileController.dart';
+import 'package:d_art/controller/controller/profile_controller.dart';
 import 'package:d_art/view/bottomnav/bottomnav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,11 +18,11 @@ class ProfileCompletionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Complete your Profile'),
+        title: const Text('Complete Your Profile'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop();
+            Get.back();
           },
         ),
       ),

@@ -3,7 +3,7 @@ import 'package:d_art/controller/controller/postselectioncontroller.dart';
 import 'package:d_art/view/Homeowner/mediaselection.dart';
 import 'package:d_art/view/Homeowner/profilescreen.dart';
 import 'package:d_art/view/Homeowner/searchscreen.dart';
-import 'package:d_art/view/Homeowner/serviceHome.dart';
+import 'package:d_art/view/Homeowner/service_home.dart';
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

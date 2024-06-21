@@ -204,11 +204,10 @@ class GridContainer extends StatelessWidget {
             mainAxisSpacing: 8.0,
           ),
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: 9, // Number of images to display
+          itemCount: 9,
           itemBuilder: (BuildContext context, int index) {
             return serviceContainer(
-              'assets/home_image_$index.png', // Change imageURL to imagePath
-
+              'assets/home_image_$index.png',
               index,
             );
           },

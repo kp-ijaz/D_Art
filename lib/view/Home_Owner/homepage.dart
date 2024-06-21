@@ -36,10 +36,9 @@ class HomwOwner extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(
-              height: 60, // Define a fixed height for the ListView
+              height: 60,
               child: ListView(
-                padding: const EdgeInsets.only(
-                    bottom: 10), // Adjust padding as needed
+                padding: const EdgeInsets.only(bottom: 10),
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
                 children: const [
@@ -100,7 +99,7 @@ class HomwOwner extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: 4, // Update this count as needed
+                itemCount: 4,
                 itemBuilder: (context, index) {
                   return Card(
                     margin: const EdgeInsets.symmetric(
@@ -116,7 +115,7 @@ class HomwOwner extends StatelessWidget {
                                 child: Icon(Icons.person),
                               ),
                               const SizedBox(width: 10),
-                              Text(
+                              const Text(
                                 'Muhammed ijaz kp',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
@@ -144,7 +143,7 @@ class HomwOwner extends StatelessWidget {
                                 icon: const Icon(Icons.share),
                                 onPressed: () {},
                               ),
-                              Spacer(),
+                              const Spacer(),
                               IconButton(
                                 icon: const Icon(Icons.bookmark_border),
                                 onPressed: () {},
@@ -161,7 +160,6 @@ class HomwOwner extends StatelessWidget {
                 },
               ),
             ),
-            // Add other widgets here if needed
           ],
         ),
       ),
@@ -185,9 +183,7 @@ class HomwOwner extends StatelessWidget {
         ),
         if (isExpanded)
           GestureDetector(
-            onTap: () {
-              // Handle the "read more" action
-            },
+            onTap: () {},
             child: const Text(
               'Read more',
               style: TextStyle(color: Colors.blue),

@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+// import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 class ProfileController extends GetxController {
   var name = ''.obs;
@@ -16,6 +19,10 @@ class ProfileController extends GetxController {
 
   var isLoading = false.obs;
   var isScrolled = false.obs;
+
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  get imageUrl => null;
 
   Future<void> fetchLocation() async {
     bool serviceEnabled;
@@ -71,6 +78,16 @@ class ProfileController extends GetxController {
     imageError.value = '';
     try {
       isLoading.value = true;
+
+      // Upload image to Firebase Storage
+      File file = File(imagePath.value);
+      String fileName = file.path.split('/').last;
+      Reference storageRef = _storage.ref().child('profiles/$fileName');
+      UploadTask uploadTask = storageRef.putFile(file);
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+      // Save profile data to Firestore
       String userId = FirebaseAuth.instance.currentUser!.uid;
       String email = FirebaseAuth.instance.currentUser!.email ?? '';
       await FirebaseFirestore.instance.collection('profiles').doc(userId).set({
@@ -78,10 +95,11 @@ class ProfileController extends GetxController {
         'phone': phone.value,
         'location': location.value,
         'bio': bio.value,
-        'imagePath': imagePath.value,
+        'imageUrl': downloadUrl, // Store download URL in Firestore
         'email': email,
-        'profileCompleted': true, // Add this line
+        'profileCompleted': true,
       });
+
       isLoading.value = false;
       Get.snackbar('Success', 'Profile created successfully');
     } catch (e) {
@@ -101,6 +119,16 @@ class ProfileController extends GetxController {
     imageError.value = '';
     try {
       isLoading.value = true;
+
+      // Upload image to Firebase Storage
+      File file = File(imagePath.value);
+      String fileName = file.path.split('/').last;
+      Reference storageRef = _storage.ref().child('profiles/$fileName');
+      UploadTask uploadTask = storageRef.putFile(file);
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+      // Update profile data in Firestore
       String userId = FirebaseAuth.instance.currentUser!.uid;
       String email = FirebaseAuth.instance.currentUser!.email ?? '';
       await FirebaseFirestore.instance
@@ -111,10 +139,11 @@ class ProfileController extends GetxController {
         'phone': phone.value,
         'location': location.value,
         'bio': bio.value,
-        'imagePath': imagePath.value,
+        'imageUrl': downloadUrl, // Store updated download URL in Firestore
         'email': email,
-        'profileCompleted': true, // Add this line
+        'profileCompleted': true,
       });
+
       isLoading.value = false;
       Get.snackbar('Success', 'Profile updated successfully');
     } catch (e) {

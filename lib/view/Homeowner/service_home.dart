@@ -1,4 +1,4 @@
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:d_art/controller/controller/postcontroller.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 class ServiceHome extends StatelessWidget {
   final PostDetailsController postController = Get.put(PostDetailsController());
 
-  ServiceHome({Key? key}) : super(key: key);
+  ServiceHome({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +116,7 @@ class ServiceHome extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 10),
                                 const Text(
-                                  'User Name', // Replace with actual username logic
+                                  'User Name',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 const Spacer(),
@@ -131,13 +131,13 @@ class ServiceHome extends StatelessWidget {
                               height: 200,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: post.media.length,
+                                itemCount: post.mediaUrls.length,
                                 itemBuilder: (context, mediaIndex) {
                                   return Padding(
                                     padding: const EdgeInsets.only(right: 8.0),
-                                    child: Image.file(
-                                      File(post.media[mediaIndex]),
-                                      width: 200,
+                                    child: Image.network(
+                                      post.mediaUrls[mediaIndex],
+                                      width: 350,
                                       fit: BoxFit.cover,
                                     ),
                                   );

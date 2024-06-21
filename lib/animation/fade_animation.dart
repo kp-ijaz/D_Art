@@ -5,7 +5,7 @@ class SlideAnimation extends StatelessWidget {
   final double delay;
   final Widget child;
 
-  SlideAnimation({required this.delay, required this.child});
+  const SlideAnimation({super.key, required this.delay, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -13,13 +13,13 @@ class SlideAnimation extends StatelessWidget {
       ..add(
         AnimProps.opacity,
         Tween(begin: 0.0, end: 1.0),
-        Duration(milliseconds: 500),
+        const Duration(milliseconds: 500),
         Curves.easeOut,
       )
       ..add(
         AnimProps.translateY,
         Tween(begin: 30.0, end: 0.0),
-        Duration(milliseconds: 500),
+        const Duration(milliseconds: 500),
         Curves.easeOut,
       );
 

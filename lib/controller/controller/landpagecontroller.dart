@@ -27,7 +27,6 @@ class StartController extends GetxController {
 
   @override
   void onInit() {
-    // Randomly select from service list every 2 seconds
     Timer.periodic(const Duration(seconds: 2), (timer) {
       selectedService.value = Random().nextInt(services.length);
     });

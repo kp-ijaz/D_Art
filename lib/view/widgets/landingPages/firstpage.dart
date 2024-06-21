@@ -1,4 +1,4 @@
-import 'package:d_art/animation/FadeAnimation.dart';
+import 'package:d_art/animation/fade_animation.dart';
 import 'package:d_art/controller/controller/landpagecontroller.dart';
 // import 'package:d_art/view/widgets/AfterLoginPage/messagepage.dart';
 import 'package:d_art/view/widgets/Loginpage/loginpage.dart';
@@ -15,6 +15,8 @@ class Service {
 
 class StartPage extends StatelessWidget {
   final _startController = Get.put(StartController());
+
+  StartPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class StartPage extends StatelessWidget {
               itemCount: _startController.services.length,
               itemBuilder: (BuildContext context, int index) {
                 return SlideAnimation(
-                  delay: (1.0 + index) / 4, // Adjust delay as needed
+                  delay: (1.0 + index) / 4,
                   child: serviceContainer(
                     _startController.services[index].imageURL,
                     _startController.services[index].name,
@@ -94,7 +96,7 @@ class StartPage extends StatelessWidget {
                       color: Colors.black,
                       onPressed: () {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => Loginpage()));
+                            builder: (context) => LoginPage()));
                       },
                       height: 55,
                       shape: RoundedRectangleBorder(

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:d_art/view/Homeowner/mediaselection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,14 +11,13 @@ class MediaSelectionController extends GetxController {
 
   Future<void> pickMedia(BuildContext ctx) async {
     try {
-      final pickedMedia =
-          await _picker.pickMultiImage(); // Pick multiple images
+      final pickedMedia = await _picker.pickMultiImage();
       if (pickedMedia != null) {
         selectedMedia.value = pickedMedia;
         navigateToDetailsScreen(ctx);
       }
     } catch (e) {
-      print(e);
+      log('$e');
     }
   }
 

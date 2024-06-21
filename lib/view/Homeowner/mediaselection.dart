@@ -128,18 +128,20 @@ class MediaDetailsScreen extends StatelessWidget {
                   labelText: 'Type of work',
                   border: OutlineInputBorder(),
                 ),
-                items: ['Plumbing', 'Electrical', 'Painting']
-                    .map((workType) => DropdownMenuItem(
-                          value: workType,
-                          child: Text(workType),
-                        ))
-                    .toList(),
+                items:
+                    ['Full house', 'Bedroom', 'Kitchen', 'Staircase', 'Sitout']
+                        .map((workType) => DropdownMenuItem(
+                              value: workType,
+                              child: Text(workType),
+                            ))
+                        .toList(),
                 onChanged: (value) {
                   controller.workType.value = value!;
                 },
               ),
               const SizedBox(height: 16.0),
               TextField(
+                keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'Select clients contact',
                   prefixIcon: Icon(Icons.contacts),
@@ -153,7 +155,6 @@ class MediaDetailsScreen extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-// Implement the logic to post the media along with additional details
                     controller.postDetails();
                     Get.offAll(() => BottomNavBar());
                   },

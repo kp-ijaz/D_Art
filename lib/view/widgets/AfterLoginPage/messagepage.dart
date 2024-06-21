@@ -58,7 +58,7 @@ class MessagePage extends StatelessWidget {
                       Get.offAll(() => ProfileCompletionPage());
                     },
                     child: const Text(
-                      'continue',
+                      'Continue',
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),

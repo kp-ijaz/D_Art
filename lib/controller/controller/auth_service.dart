@@ -29,8 +29,7 @@ class AuthService {
           email: email, password: password);
       if (cred.user != null) {
         await storeUserDetails(email, password);
-        await _saveEmailToFirestore(
-            cred.user!.uid, email); // Save email to Firestore
+        await _saveEmailToFirestore(cred.user!.uid, email);
       }
       return cred.user;
     } catch (e) {
@@ -68,8 +67,7 @@ class AuthService {
           await _auth.signInWithCredential(credential);
       final User? user = userCredential.user;
       if (user != null) {
-        await _saveEmailToFirestore(
-            user.uid, user.email!); // Save email to Firestore
+        await _saveEmailToFirestore(user.uid, user.email!);
       }
       return user;
     } catch (e) {
@@ -85,7 +83,7 @@ class AuthService {
       }, SetOptions(merge: true));
     } catch (e) {
       log('Error saving email to Firestore: $e');
-      throw e; // Rethrow the error to handle it elsewhere if needed
+      // throw e;
     }
   }
 
@@ -103,7 +101,6 @@ class AuthService {
       return await _auth.signInWithEmailAndPassword(
           email: email, password: password);
     } catch (e) {
-      // Handle the error here if needed
       return null;
     }
   }

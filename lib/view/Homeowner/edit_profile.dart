@@ -1,4 +1,4 @@
-import 'package:d_art/controller/controller/profileController.dart';
+import 'package:d_art/controller/controller/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,6 +8,8 @@ class EditProfilePage extends StatelessWidget {
   final ProfileController controller = Get.find<ProfileController>();
 
   final _formKey = GlobalKey<FormState>();
+
+  EditProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
