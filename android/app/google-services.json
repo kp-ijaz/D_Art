@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "462955118580",
+    "firebase_url": "https://social-media-app-bcb99-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "social-media-app-bcb99",
+    "storage_bucket": "social-media-app-bcb99.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:462955118580:android:8edc89147ac50e3c3b03a1",
+        "android_client_info": {
+          "package_name": "com.example.d_art"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN7-cGRVfcYZ4DjKF4NyzzXcpNLg22l_U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
