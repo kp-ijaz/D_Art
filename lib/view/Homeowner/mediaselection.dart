@@ -80,6 +80,9 @@ class MediaDetailsScreen extends StatelessWidget {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(15))),
                             ),
+                            onChanged: (value) {
+                              controller.description.value = value;
+                            },
                           ),
                         ],
                       ),

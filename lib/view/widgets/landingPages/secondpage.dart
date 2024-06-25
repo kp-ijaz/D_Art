@@ -18,10 +18,10 @@ class HomeServiceContent extends StatefulWidget {
   const HomeServiceContent({super.key});
 
   @override
-  _HomeServiceContentState createState() => _HomeServiceContentState();
+  HomeServiceContentState createState() => HomeServiceContentState();
 }
 
-class _HomeServiceContentState extends State<HomeServiceContent>
+class HomeServiceContentState extends State<HomeServiceContent>
     with TickerProviderStateMixin {
   late AnimationController _moveUpController;
   late AnimationController _fadeInGridController;
@@ -131,10 +131,10 @@ class AnimatedSlogan extends StatefulWidget {
   const AnimatedSlogan({super.key});
 
   @override
-  _AnimatedSloganState createState() => _AnimatedSloganState();
+  AnimatedSloganState createState() => AnimatedSloganState();
 }
 
-class _AnimatedSloganState extends State<AnimatedSlogan>
+class AnimatedSloganState extends State<AnimatedSlogan>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeInAnimation;

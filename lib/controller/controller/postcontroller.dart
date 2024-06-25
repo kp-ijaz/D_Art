@@ -1,11 +1,14 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:d_art/view/models/post_model.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PostDetailsController extends GetxController {
+  var description = ''.obs;
   var location = ''.obs;
   var workType = ''.obs;
   var clientContact = ''.obs;
@@ -29,28 +32,46 @@ class PostDetailsController extends GetxController {
   Future<void> postDetails() async {
     List<String> mediaUrls = await _uploadMedia();
 
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('profiles')
+        .doc(userId)
+        .get();
+
+    String userName = userDoc['name'];
+    String userImageUrl = userDoc['imageUrl'];
+
     Post newPost = Post(
       mediaUrls: mediaUrls,
+      description: description.value,
       location: location.value,
       workType: workType.value,
       clientContact: clientContact.value,
+      userName: userName,
+      userImageUrl: userImageUrl,
     );
 
     try {
       await postCollection.add({
         'media': newPost.mediaUrls,
+        'description': newPost.description,
         'location': newPost.location,
         'workType': newPost.workType,
         'clientContact': newPost.clientContact,
+        'userName': userName,
+        'userImageUrl': userImageUrl,
         'timestamp': Timestamp.now(),
       });
 
+      // Clear the form fields
+      description.value = '';
       location.value = '';
       workType.value = '';
       clientContact.value = '';
       selectedMedia.clear();
 
-      fetchPosts();
+      // Fetch the updated list of posts
+      await fetchPosts();
 
       Get.back();
     } catch (e) {
@@ -77,34 +98,25 @@ class PostDetailsController extends GetxController {
     return mediaUrls;
   }
 
-  void fetchPosts() async {
+  Future<void> fetchPosts() async {
     try {
       QuerySnapshot snapshot =
           await postCollection.orderBy('timestamp', descending: true).get();
       posts.value = snapshot.docs.map((doc) {
         return Post(
           mediaUrls: List<String>.from(doc['media']),
+          description: doc['description'],
           location: doc['location'],
           workType: doc['workType'],
           clientContact: doc['clientContact'],
+          userName: doc['userName'],
+          userImageUrl: doc['userImageUrl'],
         );
       }).toList();
+      log('Fetched ${posts.length} posts');
+      update();
     } catch (e) {
       log('Error fetching posts: $e');
     }
   }
-}
-
-class Post {
-  final List<String> mediaUrls;
-  final String location;
-  final String workType;
-  final String clientContact;
-
-  Post({
-    required this.mediaUrls,
-    required this.location,
-    required this.workType,
-    required this.clientContact,
-  });
 }

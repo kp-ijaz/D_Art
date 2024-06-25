@@ -1,8 +1,8 @@
-// import 'dart:io';
-
-import 'package:d_art/controller/controller/postcontroller.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:d_art/controller/controller/postcontroller.dart';
+import 'package:readmore/readmore.dart';
 
 class ServiceHome extends StatelessWidget {
   final PostDetailsController postController = Get.put(PostDetailsController());
@@ -97,6 +97,10 @@ class ServiceHome extends StatelessWidget {
             ),
             Expanded(
               child: Obx(() {
+                if (postController.posts.isEmpty) {
+                  return const Center(child: Text('No posts available.'));
+                }
+
                 return ListView.builder(
                   itemCount: postController.posts.length,
                   itemBuilder: (context, index) {
@@ -111,13 +115,15 @@ class ServiceHome extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                const CircleAvatar(
-                                  child: Icon(Icons.person),
+                                CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(post.userImageUrl),
                                 ),
                                 const SizedBox(width: 10),
-                                const Text(
-                                  'User Name',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                Text(
+                                  post.userName,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 const Spacer(),
                                 IconButton(
@@ -169,11 +175,27 @@ class ServiceHome extends StatelessWidget {
                             const SizedBox(height: 10),
                             Text(
                               '${post.location} - ${post.workType}',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 5),
-                            Text(post.clientContact),
+                            ReadMoreText(
+                              post.description,
+                              trimMode: TrimMode.Line,
+                              trimLines: 2,
+                              trimCollapsedText: 'Read more',
+                              trimExpandedText: 'Show less',
+                              isCollapsed: ValueNotifier(true),
+
+                              // colorClickableText:
+                              //     const Color.fromARGB(255, 247, 0, 0),
+                              moreStyle: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold),
+                              lessStyle: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red),
+                            )
                           ],
                         ),
                       ),

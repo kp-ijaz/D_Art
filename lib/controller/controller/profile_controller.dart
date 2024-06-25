@@ -95,7 +95,7 @@ class ProfileController extends GetxController {
         'phone': phone.value,
         'location': location.value,
         'bio': bio.value,
-        'imageUrl': downloadUrl, // Store download URL in Firestore
+        'imageUrl': downloadUrl,
         'email': email,
         'profileCompleted': true,
       });
@@ -120,7 +120,6 @@ class ProfileController extends GetxController {
     try {
       isLoading.value = true;
 
-      // Upload image to Firebase Storage
       File file = File(imagePath.value);
       String fileName = file.path.split('/').last;
       Reference storageRef = _storage.ref().child('profiles/$fileName');
@@ -128,7 +127,6 @@ class ProfileController extends GetxController {
       TaskSnapshot taskSnapshot = await uploadTask;
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
-      // Update profile data in Firestore
       String userId = FirebaseAuth.instance.currentUser!.uid;
       String email = FirebaseAuth.instance.currentUser!.email ?? '';
       await FirebaseFirestore.instance
@@ -139,7 +137,7 @@ class ProfileController extends GetxController {
         'phone': phone.value,
         'location': location.value,
         'bio': bio.value,
-        'imageUrl': downloadUrl, // Store updated download URL in Firestore
+        'imageUrl': downloadUrl,
         'email': email,
         'profileCompleted': true,
       });

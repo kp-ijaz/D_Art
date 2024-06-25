@@ -10,7 +10,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class ProfilePage extends StatelessWidget {
   final ProfileController controller = Get.find<ProfileController>();
 
-  ProfilePage({Key? key}) : super(key: key);
+  ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +88,7 @@ class ProfilePage extends StatelessWidget {
                               fit: BoxFit.cover,
                             )
                           : Image.asset(
-                              'assets/profile-image.jpg',
+                              'assets/home_image_2.png',
                               fit: BoxFit.cover,
                             ),
                     ),

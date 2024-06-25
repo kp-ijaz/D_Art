@@ -12,10 +12,8 @@ class MediaSelectionController extends GetxController {
   Future<void> pickMedia(BuildContext ctx) async {
     try {
       final pickedMedia = await _picker.pickMultiImage();
-      if (pickedMedia != null) {
-        selectedMedia.value = pickedMedia;
-        navigateToDetailsScreen(ctx);
-      }
+      selectedMedia.value = pickedMedia;
+      navigateToDetailsScreen(ctx);
     } catch (e) {
       log('$e');
     }

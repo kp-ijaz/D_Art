@@ -131,65 +131,37 @@ class ProfileCompletionPage extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 20),
-// TextFormField(
-// decoration: const InputDecoration(
-// labelText: 'Job',
-// border: OutlineInputBorder(
-// borderRadius: BorderRadius.all(Radius.circular(17))),
-// ),
-// readOnly: true,
-// controller: TextEditingController(
-// text: controller.job.value,
-// ),
-// onTap: () {
-// // Navigator.of(context).push(MaterialPageRoute(
-// // builder: (context) => ServiceSelectionPage()));
-// },
-// ),
-// const SizedBox(height: 20),
-// TextFormField(
-// keyboardType: TextInputType.number,
-// decoration: const InputDecoration(
-// labelText: 'Experience',
-// border: OutlineInputBorder(
-// borderRadius: BorderRadius.all(Radius.circular(17))),
-// ),
-// onChanged: (value) => controller.experience.value = value,
-// validator: (value) {
-// if (value == null || value.isEmpty) {
-// return 'Please enter your experience';
-// }
-// return null;
-// },
-// ),
-              const SizedBox(height: 20),
-              controller.isLoading.value
-                  ? const CircularProgressIndicator()
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const SizedBox(),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.amber,
-                          ),
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              if (controller.imagePath.value.isEmpty) {
-                                controller.imageError.value =
-                                    'Please select an image';
-                              } else {
-                                controller.imageError.value = '';
-                                await controller.saveProfile();
-                                _showProfile(context);
-                                log('it is completed...........');
-                              }
-                            }
-                          },
-                          child: const Text('Complete'),
+              Obx(() {
+                if (controller.isLoading.value) {
+                  return const CircularProgressIndicator();
+                } else {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.amber,
                         ),
-                      ],
-                    ),
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            if (controller.imagePath.value.isEmpty) {
+                              controller.imageError.value =
+                                  'Please select an image';
+                            } else {
+                              controller.imageError.value = '';
+                              await controller.saveProfile();
+                              _showProfile(context);
+                              log('it is completed...........');
+                            }
+                          }
+                        },
+                        child: const Text('Complete'),
+                      ),
+                    ],
+                  );
+                }
+              }),
             ],
           ),
         ),
