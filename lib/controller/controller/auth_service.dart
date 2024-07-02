@@ -28,7 +28,7 @@ class AuthService {
       final cred = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       if (cred.user != null) {
-        // await storeUserDetails(email, password);
+        
         await _saveEmailToFirestore(cred.user!.uid, email);
       }
       return cred.user;

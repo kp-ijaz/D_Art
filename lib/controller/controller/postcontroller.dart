@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:d_art/view/models/post_model.dart';
+import 'package:d_art/models/post_model.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,6 +15,10 @@ class PostDetailsController extends GetxController {
   var selectedMedia = <XFile>[].obs;
 
   var posts = <Post>[].obs;
+  var userPosts = <Post>[].obs;
+  var isLoading = false.obs;
+  var isPosting = false.obs;
+
   final CollectionReference postCollection =
       FirebaseFirestore.instance.collection('posts');
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -22,7 +26,8 @@ class PostDetailsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchPosts();
+    fetchAllPosts();
+    fetchUserPosts();
   }
 
   void setSelectedMedia(List<XFile> media) {
@@ -30,6 +35,7 @@ class PostDetailsController extends GetxController {
   }
 
   Future<void> postDetails() async {
+    isPosting.value = true;
     List<String> mediaUrls = await _uploadMedia();
 
     String userId = FirebaseAuth.instance.currentUser!.uid;
@@ -42,6 +48,7 @@ class PostDetailsController extends GetxController {
     String userImageUrl = userDoc['imageUrl'];
 
     Post newPost = Post(
+      id: '',
       mediaUrls: mediaUrls,
       description: description.value,
       location: location.value,
@@ -49,10 +56,11 @@ class PostDetailsController extends GetxController {
       clientContact: clientContact.value,
       userName: userName,
       userImageUrl: userImageUrl,
+      userId: userId,
     );
 
     try {
-      await postCollection.add({
+      DocumentReference docRef = await postCollection.add({
         'media': newPost.mediaUrls,
         'description': newPost.description,
         'location': newPost.location,
@@ -60,22 +68,28 @@ class PostDetailsController extends GetxController {
         'clientContact': newPost.clientContact,
         'userName': userName,
         'userImageUrl': userImageUrl,
+        'userId': userId,
         'timestamp': Timestamp.now(),
       });
 
-      // Clear the form fields
+      newPost.id = docRef.id;
+
       description.value = '';
       location.value = '';
       workType.value = '';
       clientContact.value = '';
       selectedMedia.clear();
 
-      // Fetch the updated list of posts
-      await fetchPosts();
+      posts.insert(0, newPost);
+      userPosts.insert(0, newPost);
+
+      update();
 
       Get.back();
     } catch (e) {
       log('Error adding post: $e');
+    } finally {
+      isPosting.value = false;
     }
   }
 
@@ -98,12 +112,15 @@ class PostDetailsController extends GetxController {
     return mediaUrls;
   }
 
-  Future<void> fetchPosts() async {
-    try {
-      QuerySnapshot snapshot =
-          await postCollection.orderBy('timestamp', descending: true).get();
+  void fetchAllPosts() {
+    isLoading.value = true;
+    postCollection
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .listen((snapshot) {
       posts.value = snapshot.docs.map((doc) {
         return Post(
+          id: doc.id,
           mediaUrls: List<String>.from(doc['media']),
           description: doc['description'],
           location: doc['location'],
@@ -111,12 +128,66 @@ class PostDetailsController extends GetxController {
           clientContact: doc['clientContact'],
           userName: doc['userName'],
           userImageUrl: doc['userImageUrl'],
+          userId: doc['userId'],
         );
       }).toList();
-      log('Fetched ${posts.length} posts');
+      log('Fetched all posts ${posts.length} posts');
+      isLoading.value = false;
       update();
+    });
+  }
+
+  void fetchUserPosts() {
+    isLoading.value = true;
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    postCollection
+        .where('userId', isEqualTo: userId)
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .listen((snapshot) {
+      userPosts.value = snapshot.docs.map((doc) {
+        return Post(
+          id: doc.id,
+          mediaUrls: List<String>.from(doc['media']),
+          description: doc['description'],
+          location: doc['location'],
+          workType: doc['workType'],
+          clientContact: doc['clientContact'],
+          userName: doc['userName'],
+          userImageUrl: doc['userImageUrl'],
+          userId: doc['userId'],
+        );
+      }).toList();
+      log('Fetched user posts ${userPosts.length} user posts');
+      isLoading.value = false;
+      update();
+    });
+  }
+
+  void deletePost(String postId) async {
+    await postCollection.doc(postId).delete();
+    fetchUserPosts();
+  }
+
+  Future<void> editPost(String postId, Post editedPost) async {
+    try {
+      await postCollection.doc(postId).update({
+        'media': editedPost.mediaUrls,
+        'description': editedPost.description,
+        'location': editedPost.location,
+        'workType': editedPost.workType,
+        'clientContact': editedPost.clientContact,
+      });
+
+      int index = userPosts.indexWhere((post) => post.id == postId);
+      if (index != -1) {
+        userPosts[index] = editedPost;
+      }
+
+      update();
+      Get.back();
     } catch (e) {
-      log('Error fetching posts: $e');
+      log('Error editing post: $e');
     }
   }
 }

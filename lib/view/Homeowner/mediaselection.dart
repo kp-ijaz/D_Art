@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:d_art/controller/controller/postcontroller.dart';
 import 'package:d_art/view/bottomnav/bottomnav_bar.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +31,11 @@ class MediaDetailsScreen extends StatelessWidget {
                 mainAxisSpacing: 4.0,
               ),
               itemBuilder: (context, index) {
-                return Image.file(
-                  File(selectedMedia[index].path),
+                return CachedNetworkImage(
+                  imageUrl: selectedMedia[index].path,
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                   fit: BoxFit.cover,
                 );
               },
@@ -52,122 +56,133 @@ class MediaDetailsScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  color: Colors.grey.shade200,
-                ),
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextFormField(
-                            maxLines: 2,
-                            decoration: const InputDecoration(
-                              labelText:
-                                  'Add details to get more views for your post',
-                              hintStyle: TextStyle(fontSize: 16),
-                              border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15))),
-                            ),
-                            onChanged: (value) {
-                              controller.description.value = value;
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 16.0),
-                    GestureDetector(
-                      onTap: () => _showSelectedMedia(context),
-                      child: Container(
-                        width: 80,
-                        height: 80,
+      body: Obx(() {
+        return controller.isLoading.value
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0),
-                          image: DecorationImage(
-                            image: FileImage(File(selectedMedia[0].path)),
-                            fit: BoxFit.cover,
-                          ),
+                          borderRadius: BorderRadius.circular(25),
+                          color: Colors.grey.shade200,
+                        ),
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TextFormField(
+                                    maxLines: 2,
+                                    decoration: const InputDecoration(
+                                      labelText:
+                                          'Add details to get more views for your post',
+                                      hintStyle: TextStyle(fontSize: 16),
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15))),
+                                    ),
+                                    onChanged: (value) {
+                                      controller.description.value = value;
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 16.0),
+                            GestureDetector(
+                              onTap: () => _showSelectedMedia(context),
+                              child: Container(
+                                width: 80,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  image: DecorationImage(
+                                    image:
+                                        FileImage(File(selectedMedia[0].path)),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 16.0),
+                      const Text(
+                        'Add more details',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const Text(
+                        'Reach more clients by adding location & work',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 16.0),
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Location of work',
+                          prefixIcon: Icon(Icons.location_on),
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          controller.location.value = value;
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(
+                          labelText: 'Type of work',
+                          border: OutlineInputBorder(),
+                        ),
+                        items: [
+                          'Full house',
+                          'Bedroom',
+                          'Kitchen',
+                          'Staircase',
+                          'Sitout'
+                        ]
+                            .map((workType) => DropdownMenuItem(
+                                  value: workType,
+                                  child: Text(workType),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          controller.workType.value = value!;
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      TextField(
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: 'Select clients contact',
+                          prefixIcon: Icon(Icons.contacts),
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          controller.clientContact.value = value;
+                        },
+                      ),
+                      const SizedBox(height: 24.0),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            controller.postDetails();
+                            Get.offAll(() => BottomNavBar());
+                          },
+                          child: const Text('Post'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16.0),
-              const Text(
-                'Add more details',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const Text(
-                'Reach more clients by adding location & work',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-              const SizedBox(height: 16.0),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Location of work',
-                  prefixIcon: Icon(Icons.location_on),
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  controller.location.value = value;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Type of work',
-                  border: OutlineInputBorder(),
-                ),
-                items:
-                    ['Full house', 'Bedroom', 'Kitchen', 'Staircase', 'Sitout']
-                        .map((workType) => DropdownMenuItem(
-                              value: workType,
-                              child: Text(workType),
-                            ))
-                        .toList(),
-                onChanged: (value) {
-                  controller.workType.value = value!;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Select clients contact',
-                  prefixIcon: Icon(Icons.contacts),
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  controller.clientContact.value = value;
-                },
-              ),
-              const SizedBox(height: 24.0),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    controller.postDetails();
-                    Get.offAll(() => BottomNavBar());
-                  },
-                  child: const Text('Post'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+              );
+      }),
     );
   }
 }

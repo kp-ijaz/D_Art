@@ -17,14 +17,14 @@ class SignupPage extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 50),
+          padding: const EdgeInsets.only(top: 40),
           child: Column(
             children: [
               SafeArea(
                 child: Lottie.asset('assets/signup.json'),
               ),
               const Text(
-                'Sign Up',
+                'SIGN UP',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               Form(
@@ -85,28 +85,17 @@ class SignupPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 25, right: 30),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      // crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        TextButton(
-                          onPressed: () {
-                            signupController.gotoLogin();
-                          },
-                          child: const Text(
-                            'Log in',
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
-                          ),
-                        ),
                         ElevatedButton(
                           style: const ButtonStyle(),
                           onPressed: () => signupController.signup(),
                           child: const Text(
-                            'Sign up',
+                            'SIGN UP',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20),
                           ),
@@ -116,6 +105,18 @@ class SignupPage extends StatelessWidget {
                   ],
                 ),
               ),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    signupController.gotoLogin();
+                  },
+                  child: const Text(
+                    'Already have an account? Login',
+                    style: TextStyle(fontSize: 16, color: Colors.blue),
+                  ),
+                ),
+              ),
+              // const SizedBox(height: 10),
               const Padding(
                 padding: EdgeInsets.only(top: 10, bottom: 10),
                 child: Text(
@@ -123,10 +124,13 @@ class SignupPage extends StatelessWidget {
                   style: TextStyle(fontSize: 19),
                 ),
               ),
+              // const SizedBox(height: 10),
               SignInButton(
                 Buttons.google,
                 onPressed: () => signupController.signInWithGoogle(),
+                text: 'Register With Google',
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

@@ -1,9 +1,11 @@
 import 'package:d_art/controller/controller/bottomnavbarcontroller.dart';
 import 'package:d_art/controller/controller/postselectioncontroller.dart';
+import 'package:d_art/view/Homeowner/chatscreen/screen/chatscreen.dart';
 import 'package:d_art/view/Homeowner/mediaselection.dart';
 import 'package:d_art/view/Homeowner/profilescreen.dart';
 import 'package:d_art/view/Homeowner/searchscreen.dart';
 import 'package:d_art/view/Homeowner/service_home.dart';
+import 'package:d_art/view/drawer/drawer.dart';
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,11 +26,36 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      body: Obx(() =>
-          _screens[SelectedTab.values.indexOf(controller.selectedTab.value)]),
-      bottomNavigationBar: Obx(() => SizedBox(
+    return Obx(() => Scaffold(
+          appBar: controller.selectedTab.value == SelectedTab.home
+              ? AppBar(
+                  actions: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.notifications,
+                        size: 30,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Get.off(() => const ChatScreen());
+                      },
+                      icon: const Icon(
+                        Icons.near_me_outlined,
+                        size: 30,
+                      ),
+                    ),
+                  ],
+                )
+              : null,
+          drawer: controller.selectedTab.value == SelectedTab.home
+              ? const MyDrawer()
+              : null,
+          extendBody: true,
+          body: _screens[
+              SelectedTab.values.indexOf(controller.selectedTab.value)],
+          bottomNavigationBar: SizedBox(
             height: 125,
             child: DotNavigationBar(
               backgroundColor: Colors.grey,
@@ -47,18 +74,20 @@ class BottomNavBar extends StatelessWidget {
               },
               items: [
                 DotNavigationBarItem(
-                    icon: const Icon(Icons.home), selectedColor: Colors.green),
+                    icon: const Icon(Icons.home, size: 23),
+                    selectedColor: Colors.purple),
                 DotNavigationBarItem(
-                    icon: const Icon(Icons.search), selectedColor: Colors.red),
+                    icon: const Icon(Icons.search, size: 23),
+                    selectedColor: Colors.purple),
                 DotNavigationBarItem(
-                    icon: const Icon(Icons.add_a_photo),
-                    selectedColor: Colors.blue),
+                    icon: const Icon(Icons.add_a_photo, size: 23),
+                    selectedColor: Colors.purple),
                 DotNavigationBarItem(
-                    icon: const Icon(Icons.person),
+                    icon: const Icon(Icons.person, size: 23),
                     selectedColor: Colors.purple),
               ],
             ),
-          )),
-    );
+          ),
+        ));
   }
 }

@@ -1,13 +1,14 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:d_art/models/post_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-// import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 class ProfileController extends GetxController {
   var name = ''.obs;
@@ -16,13 +17,47 @@ class ProfileController extends GetxController {
   var bio = ''.obs;
   var imagePath = ''.obs;
   var imageError = ''.obs;
-
   var isLoading = false.obs;
   var isScrolled = false.obs;
+  var userPosts = <Post>[].obs;
 
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  get imageUrl => null;
+  @override
+  void onInit() {
+    super.onInit();
+    fetchUserPosts();
+  }
+
+  Future<void> fetchUserPosts() async {
+    try {
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('posts')
+          .where('userId', isEqualTo: userId)
+          .orderBy('timestamp', descending: true)
+          .get();
+
+      userPosts.value = snapshot.docs.map((doc) {
+        return Post(
+          id: doc.id,
+          mediaUrls: List<String>.from(doc['media']),
+          description: doc['description'],
+          location: doc['location'],
+          workType: doc['workType'],
+          clientContact: doc['clientContact'],
+          userName: doc['userName'],
+          userImageUrl: doc['userImageUrl'],
+          userId: doc['userId'],
+        );
+      }).toList();
+
+      log('Fetched user posts: ${userPosts.length} user posts');
+    } catch (e) {
+      log('Error fetching user posts: $e');
+    }
+  }
 
   Future<void> fetchLocation() async {
     bool serviceEnabled;
@@ -79,7 +114,6 @@ class ProfileController extends GetxController {
     try {
       isLoading.value = true;
 
-      // Upload image to Firebase Storage
       File file = File(imagePath.value);
       String fileName = file.path.split('/').last;
       Reference storageRef = _storage.ref().child('profiles/$fileName');
@@ -87,7 +121,6 @@ class ProfileController extends GetxController {
       TaskSnapshot taskSnapshot = await uploadTask;
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
-      // Save profile data to Firestore
       String userId = FirebaseAuth.instance.currentUser!.uid;
       String email = FirebaseAuth.instance.currentUser!.email ?? '';
       await FirebaseFirestore.instance.collection('profiles').doc(userId).set({

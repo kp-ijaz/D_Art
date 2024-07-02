@@ -40,7 +40,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 const Text(
-                  'Log in',
+                  'LOG IN',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
                 ),
                 customformfield(
@@ -74,30 +74,33 @@ class LoginPage extends StatelessWidget {
                   },
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 35, right: 30),
+                  padding: const EdgeInsets.only(
+                    left: 25,
+                    right: 30,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text('Forgot password?'),
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
-                            onPressed: () {
-                              Get.offAll(() => SignupPage());
-                            },
-                            child: const Text(
-                              'Sign up',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
+                            onPressed: () {},
+                            child: const Text('Forgot password?'),
                           ),
+                          // TextButton(
+                          //   onPressed: () {
+                          //     Get.offAll(() => SignupPage());
+                          //   },
+                          //   child: const Text(
+                          //     'Sign up',
+                          //     style: TextStyle(
+                          //       fontSize: 20,
+                          //       fontWeight: FontWeight.bold,
+                          //       color: Colors.black,
+                          //     ),
+                          //   ),
+                          // ),
                           ElevatedButton(
                             style: const ButtonStyle(),
                             onPressed: () => loginController.login(
@@ -107,7 +110,7 @@ class LoginPage extends StatelessWidget {
                               _password.text,
                             ),
                             child: const Text(
-                              'Log in',
+                              'LOG IN',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20),
                             ),
@@ -115,6 +118,17 @@ class LoginPage extends StatelessWidget {
                         ],
                       ),
                     ],
+                  ),
+                ),
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      Get.offAll(() => SignupPage());
+                    },
+                    child: const Text(
+                      "Don't you have an account? Sign Up",
+                      style: TextStyle(fontSize: 16, color: Colors.blue),
+                    ),
                   ),
                 ),
                 const Padding(

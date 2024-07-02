@@ -10,7 +10,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  // Register the ProfileController
   Get.put(ProfileController());
 
   runApp(const MyApp());

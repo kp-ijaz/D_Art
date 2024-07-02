@@ -58,7 +58,6 @@ class HomeServiceContentState extends State<HomeServiceContent>
       curve: Curves.easeIn,
     );
 
-    // Start the move-up animation after a short delay
     Future.delayed(const Duration(seconds: 2), () {
       _moveUpController.forward().then((_) {
         _fadeInGridController.forward().then((_) {

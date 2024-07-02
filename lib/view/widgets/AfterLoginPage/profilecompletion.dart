@@ -1,8 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:d_art/controller/controller/profile_controller.dart';
+// import 'package:d_art/view/Homeowner/usermainpage.dart';
 import 'package:d_art/view/bottomnav/bottomnav_bar.dart';
+// import 'package:d_art/view/bottomnav/bottomnav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -150,7 +151,7 @@ class ProfileCompletionPage extends StatelessWidget {
                                   'Please select an image';
                             } else {
                               controller.imageError.value = '';
-                              await controller.saveProfile();
+                              await controller.updateProfile();
                               _showProfile(context);
                               log('it is completed...........');
                             }
