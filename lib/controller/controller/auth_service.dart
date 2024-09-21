@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:developer';
 
 class AuthService {
@@ -9,26 +8,12 @@ class AuthService {
   final _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  // Future<void> storeUserDetails(String email, String password) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.setString('email', email);
-  //   await prefs.setString('password', password);
-  // }
-
-  // Future<Map<String, String?>> getUserDetails() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   String? email = prefs.getString('email');
-  //   String? password = prefs.getString('password');
-  //   return {'email': email, 'password': password};
-  // }
-
   Future<User?> createUserWithEmailAndPass(
       String email, String password) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       if (cred.user != null) {
-        
         await _saveEmailToFirestore(cred.user!.uid, email);
       }
       return cred.user;
@@ -83,7 +68,6 @@ class AuthService {
       }, SetOptions(merge: true));
     } catch (e) {
       log('Error saving email to Firestore: $e');
-      // throw e;
     }
   }
 
@@ -95,13 +79,12 @@ class AuthService {
     return snapshot.docs.isNotEmpty;
   }
 
-  // Future<UserCredential?> signInWithEmailAndPassword(
-  //     String email, String password) async {
-  //   try {
-  //     return await _auth.signInWithEmailAndPassword(
-  //         email: email, password: password);
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  Future<void> signOut() async {
+    try {
+      await _auth.signOut();
+      await _googleSignIn.signOut();
+    } catch (e) {
+      log('ERROR ON SIGN OUT >> : $e');
+    }
+  }
 }
